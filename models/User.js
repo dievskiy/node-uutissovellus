@@ -36,14 +36,22 @@ UserSchema.methods.generateJWT = function() {
     }, secret);
 };
 
-UserSchema.methods.toAuthJSON = function(){
+UserSchema.methods.toAuth = function(){
     return {
         username: this.username,
         email: this.email,
         token: this.generateJWT(),
-        bio: this.bio,
-        // image: this.image
+        bio: this.bio
     };
-};
+}
 
+UserSchema.methods.toJSON = function() {
+    return {
+        username: this.username,
+        email: this.email,
+        _id: this._id,
+        bio: this.bio,
+        createdAt: this.createdAt
+    }
+}
 mongoose.model('User', UserSchema);

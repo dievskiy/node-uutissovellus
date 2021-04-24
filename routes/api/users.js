@@ -2,20 +2,23 @@ const mongoose = require('mongoose');
 const router = require('express').Router();
 const passport = require('passport');
 const User = mongoose.model('User');
+const auth = require('../auth');
 
 const {body, validationResult} = require('express-validator');
-//
-// router.get('/users/:',
-//     auth.optional,
-//     async function (req, res) {
-//     let user = await User.findById(req.payload.id)
-//
-//     if (!user) {
-//         return res.sendStatus(401);
-//     }
-//
-//     return res.json({user: user.toAuthJSON()});
-// })
+
+router.get('/users/:user',
+    auth.optional,
+    async function (req, res) {
+
+        let username = req.params['user']
+        let user = await User.findOne({username: username}).exec()
+
+        if (!user) {
+            return res.status(404).send({message: "user not found"});
+        }
+
+        return res.json({user: user.toJSON()});
+    })
 
 router.post('/users/login',
     body('user.email').isEmail(),
@@ -28,7 +31,7 @@ router.post('/users/login',
             }
             if (user) {
                 user.token = user.generateJWT();
-                return res.json({user: user.toAuthJSON()})
+                return res.json({user: user.toAuth()})
             } else {
                 return res.status(422).json(info)
             }
@@ -51,7 +54,7 @@ router.post('/users',
 
         try {
             await user.save()
-            return res.status(200).json(user.toAuthJSON())
+            return res.status(200).json(user.toAuth())
         } catch (e) {
             return res.status(400).json({message: "User with this email or username already exists"})
         }
