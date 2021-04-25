@@ -1,11 +1,16 @@
-const router = require('express').Router();
-const mongoose = require('mongoose');
-const Article = mongoose.model('Article');
-const Comment = mongoose.model('Comment');
-const User = mongoose.model('User');
-const auth = require('../auth');
+const router = require('express').Router()
+const mongoose = require('mongoose')
+const Article = mongoose.model('Article')
+const Comment = mongoose.model('Comment')
+const User = mongoose.model('User')
+const auth = require('../auth')
 
-const {body, validationResult} = require('express-validator');
+const upload = require('../../services/upload-image')
+
+const singleUpload = upload.single('image')
+
+
+const {body, validationResult} = require('express-validator')
 
 // get all articles
 router.get('/feed', auth.optional, async function (req, res) {
@@ -13,7 +18,7 @@ router.get('/feed', auth.optional, async function (req, res) {
         let articles = await Article.find()
         let mapped = []
         for await (let a of articles) {
-            let result = JSON.parse(JSON.stringify(a));
+            let result = JSON.parse(JSON.stringify(a))
             let user = await User.findOne({_id: a.author}).exec()
             result.author = {_id: user._id, username: user.username}
             mapped.push(result)
@@ -23,7 +28,7 @@ router.get('/feed', auth.optional, async function (req, res) {
         console.log("Error " + e)
         res.status(400).send({message: "error"})
     }
-});
+})
 
 // create a new comment
 router.post('/:article/comments',
@@ -40,9 +45,9 @@ router.post('/:article/comments',
             if (!article) return res.status(404).send({message: "article not found"})
 
 
-            let comment = new Comment(req.body.comment);
-            comment.article = articleId;
-            comment.author = user;
+            let comment = new Comment(req.body.comment)
+            comment.article = articleId
+            comment.author = user
 
             await comment.save()
             await Article.findOneAndUpdate({_id: comment.article}, {$push: {comments: comment}})
@@ -52,7 +57,7 @@ router.post('/:article/comments',
             console.log('Error:' + err)
             return res.status(400).send(err)
         }
-    });
+    })
 
 // create a new article
 router.post('/',
@@ -63,9 +68,9 @@ router.post('/',
     async function (req, res) {
         try {
             // validate data
-            const errors = validationResult(req);
+            const errors = validationResult(req)
             if (!errors.isEmpty()) {
-                return res.status(400).json({errors: errors.array()});
+                return res.status(400).json({errors: errors.array()})
             }
 
             let user = await User.findById(req.payload.id)
@@ -94,4 +99,15 @@ router.get('/:article/comments', auth.optional, async function (req, res) {
     }
 })
 
-module.exports = router;
+// upload a photo for article to s3
+router.post('/upload-image', auth.required, async function (req, res) {
+    singleUpload(req, res, async function (err) {
+        if (err) {
+            return res.status(422).send({errors: [{title: 'Image Upload Error', detail: err.message}]});
+        }
+
+        return res.json({'imageUrl': req.file.location});
+    });
+})
+
+module.exports = router
