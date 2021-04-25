@@ -63,7 +63,8 @@ router.post('/:article/comments',
 router.post('/',
     body('article.title').exists(),
     body('article.body').isLength({min: 3}),
-    body('article.imageUrl').isURL(),
+    // allow only uploaded images
+    body('article.imageUrl').matches(/^https:\/\/shif-bucket.s3.amazonaws.com\/\w+$/),
     auth.required,
     async function (req, res) {
         try {
