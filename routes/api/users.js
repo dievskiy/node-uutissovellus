@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const router = require('express').Router();
-const passport = require('passport');
-const User = mongoose.model('User');
-const auth = require('../auth');
+const mongoose = require('mongoose')
+const router = require('express').Router()
+const passport = require('passport')
+const User = mongoose.model('User')
+const auth = require('../auth')
 
-const {body, validationResult} = require('express-validator');
+const {body, validationResult} = require('express-validator')
 
 router.get('/users/:user',
     auth.optional,
@@ -14,10 +14,10 @@ router.get('/users/:user',
         let user = await User.findOne({username: username}).exec()
 
         if (!user) {
-            return res.status(404).send({message: "user not found"});
+            return res.status(404).send({message: "user not found"})
         }
 
-        return res.json({user: user.toJSON()});
+        return res.json({user: user.toJSON()})
     })
 
 router.post('/users/login',
@@ -30,7 +30,7 @@ router.post('/users/login',
                 return res.status(400).json(error)
             }
             if (user) {
-                user.token = user.generateJWT();
+                user.token = user.generateJWT()
                 return res.json({user: user.toAuth()})
             } else {
                 return res.status(422).json(info)
@@ -60,4 +60,4 @@ router.post('/users',
         }
     })
 
-module.exports = router;
+module.exports = router

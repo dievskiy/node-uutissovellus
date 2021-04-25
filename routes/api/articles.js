@@ -4,13 +4,10 @@ const Article = mongoose.model('Article')
 const Comment = mongoose.model('Comment')
 const User = mongoose.model('User')
 const auth = require('../auth')
+const {body, validationResult} = require('express-validator')
 
 const upload = require('../../services/upload-image')
-
 const singleUpload = upload.single('image')
-
-
-const {body, validationResult} = require('express-validator')
 
 // get all articles
 router.get('/feed', auth.optional, async function (req, res) {

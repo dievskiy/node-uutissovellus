@@ -1,7 +1,7 @@
-const router = require('express').Router();
+const router = require('express').Router()
 
-router.use('/', require('./users'));
-router.use('/articles', require('./articles'));
-router.use('/tags', require('./tags'));
+router.use('/', require('./users'))
+router.use('/articles', require('./articles'))
+router.use('/tags', require('./tags'))
 
-module.exports = router;
+module.exports = router
