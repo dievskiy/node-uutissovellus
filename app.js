@@ -12,6 +12,7 @@ const isProd = process.env.NODE_ENV === 'production'
 const app = express()
 
 app.use(cors())
+app.options('*', cors())
 
 app.use(require('morgan')('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
