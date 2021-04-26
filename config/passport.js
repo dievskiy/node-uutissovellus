@@ -12,4 +12,4 @@ passport.use(new LocalStrategy({
         return done(null, false, {errors: {'email or password': 'is invalid'}})
     }
     return done(null, user);
-}));
+}))

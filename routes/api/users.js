@@ -31,9 +31,10 @@ router.post('/users/login',
             }
             if (user) {
                 user.token = user.generateJWT()
-                return res.json({user: user.toAuth()})
+                const result = {user: user.toAuth()}
+                return res.status(200).json(result)
             } else {
-                return res.status(422).json(info)
+                return res.status(400).json(info)
             }
         })(req, res)
     })

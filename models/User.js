@@ -40,9 +40,8 @@ UserSchema.methods.toAuth = function(){
     return {
         username: this.username,
         email: this.email,
-        token: this.generateJWT(),
-        bio: this.bio
-    };
+        accessToken: this.generateJWT()
+    }
 }
 
 UserSchema.methods.toJSON = function() {
