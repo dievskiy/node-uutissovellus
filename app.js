@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 
-app.use(session({secret: 'conduit', cookie: {maxAge: 60000}, resave: false, saveUninitialized: false}))
+app.use(session({secret: 'secret', cookie: {maxAge: 60000}, resave: false, saveUninitialized: false}))
 
 if (!isProd) {
     app.use(errorhandler())

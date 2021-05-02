@@ -60,7 +60,7 @@ router.post('/',
     body('article.title').exists(),
     body('article.body').isLength({min: 3}),
     // allow only uploaded images
-    body('article.imageUrl').matches(/^https:\/\/shif-bucket.s3.amazonaws.com\/\w+$/),
+    body('article.imageUrl').matches(/^https:\/\/shif-bucket.s3.eu-central-1.amazonaws.com\/\w+$/),
     auth.required,
     async function (req, res) {
         try {
@@ -82,8 +82,6 @@ router.post('/',
             res.status(400).send(err)
         }
     })
-
-
 
 // upload a photo for article to s3
 router.post('/upload-image', auth.required, async function (req, res) {
