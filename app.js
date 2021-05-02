@@ -33,7 +33,6 @@ if (isProd) {
 }
 
 require('./models/User')
-require('./models/Comment')
 require('./models/Article')
 require('./config/passport')
 

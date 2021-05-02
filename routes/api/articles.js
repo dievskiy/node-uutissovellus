@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const mongoose = require('mongoose')
 const Article = mongoose.model('Article')
-const Comment = mongoose.model('Comment')
 const User = mongoose.model('User')
 const auth = require('../auth')
 const {body, validationResult} = require('express-validator')
@@ -42,12 +41,12 @@ router.post('/:article/comments',
             if (!article) return res.status(404).send({message: "article not found"})
 
 
-            let comment = new Comment(req.body.comment)
-            comment.article = articleId
-            comment.author = user
+            let comment = {
+                body: req.body.comment.body,
+                author: user
+            }
 
-            await comment.save()
-            await Article.findOneAndUpdate({_id: comment.article}, {$push: {comments: comment}})
+            await article.update({$push: {comments: comment}})
 
             return res.status(200).send({})
         } catch (err) {
@@ -85,17 +84,6 @@ router.post('/',
     })
 
 
-// return an article's comments
-router.get('/:article/comments', auth.optional, async function (req, res) {
-    try {
-        let articleId = req.params['article']
-        let comments = await Comment.find({article: articleId})
-        return res.status(200).send(comments)
-    } catch (err) {
-        console.log('Error:' + err)
-        return res.status(400).send(err)
-    }
-})
 
 // upload a photo for article to s3
 router.post('/upload-image', auth.required, async function (req, res) {
