@@ -25,12 +25,16 @@ if (!isProd) {
     app.use(errorhandler())
 }
 
-if (isProd) {
-    mongoose.connect(process.env.MONGODB_URI)
-} else {
-    mongoose.connect('mongodb://localhost/testmongo')
-    mongoose.set('debug', true)
-}
+mongoose.connect(process.env.MONGODB_URI)
+    .then(res => {
+        console.log("Successfully connected to db...")
+    })
+    .catch(err => {
+        // crash if no db available
+        console.log("No db available")
+        process.exit(1)
+    })
+
 
 require('./models/User')
 require('./models/Article')
