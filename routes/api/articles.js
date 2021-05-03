@@ -11,15 +11,9 @@ const singleUpload = upload.single('image')
 // get all articles
 router.get('/feed', auth.optional, async function (req, res) {
     try {
-        let articles = await Article.find()
-        let mapped = []
-        for await (let a of articles) {
-            let result = JSON.parse(JSON.stringify(a))
-            let user = await User.findOne({_id: a.author}).exec()
-            result.author = {_id: user._id, username: user.username}
-            mapped.push(result)
-        }
-        return res.status(200).send(mapped)
+        // sort in the descending order
+        let articles = await Article.find().sort({'createdAt': -1})
+        return res.status(200).send(articles)
     } catch (e) {
         console.log("Error " + e)
         res.status(400).send({message: "error"})
