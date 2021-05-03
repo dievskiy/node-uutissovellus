@@ -22,7 +22,7 @@ router.get('/feed', auth.optional, async function (req, res) {
 
 // create a new comment
 router.post('/:article/comments',
-    body('comment.body').isLength({min: 3}),
+    body('comment.body').isLength({min: 3, max: 1024}),
     auth.required,
     async function (req, res) {
         try {
@@ -51,8 +51,8 @@ router.post('/:article/comments',
 
 // create a new article
 router.post('/',
-    body('article.title').exists(),
-    body('article.body').isLength({min: 3}),
+    body('article.title').exists().isLength({min: 3, max: 128}),
+    body('article.body').isLength({min: 3, max: 8192}),
     // allow only uploaded images
     body('article.imageUrl').matches(/^https:\/\/shif-bucket.s3.eu-central-1.amazonaws.com\/\w+$/),
     auth.required,

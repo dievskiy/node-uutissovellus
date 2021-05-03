@@ -47,18 +47,20 @@ router.post('/users',
         // validate data
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
+            console.log(errors)
             return res.status(400).json({errors: errors.array()})
         }
 
         const user = new User(req.body.user)
         user.setPassword(req.body.user.password)
 
-        try {
-            await user.save()
-            return res.status(200).json(user.toAuth())
-        } catch (e) {
+        let userExists = await User.find({$or: [{username: user.username}, {email: user.email}]})
+        if (userExists.length > 0) {
             return res.status(400).json({message: "User with this email or username already exists"})
         }
+
+        await user.save()
+        return res.status(200).json(user.toAuth())
     })
 
 module.exports = router
