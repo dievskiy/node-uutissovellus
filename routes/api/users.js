@@ -27,7 +27,7 @@ router.post('/users/login',
 
         passport.authenticate('local', {session: false}, function (error, user, info) {
             if (error) {
-                return res.status(400).json(error)
+                return res.status(400).json({message: 'Error occurred'})
             }
             if (user) {
                 user.token = user.generateJWT()

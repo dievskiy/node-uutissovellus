@@ -1,5 +1,4 @@
-const router = require('express').Router();
-const mongoose = require('mongoose');
-const Article = mongoose.model('Article');
+const router = require('express').Router()
+const mongoose = require('mongoose')
 
 module.exports = router;

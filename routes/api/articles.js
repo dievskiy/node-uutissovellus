@@ -51,7 +51,7 @@ router.post('/:article/comments',
             return res.status(200).send({})
         } catch (err) {
             console.log('Error:' + err)
-            return res.status(400).send(err)
+            return res.status(400).send({message: 'Error occurred'})
         }
     })
 
@@ -79,7 +79,25 @@ router.post('/',
             return res.status(200).send(article.jsonWith(user))
         } catch (err) {
             console.log('Error:' + err)
-            res.status(400).send(err)
+            res.status(400).send({message: 'Error occurred'})
+        }
+    })
+
+// get article by id
+router.get('/:articleId', auth.optional,
+    async function (req, res) {
+        try {
+            let articleId = req.params['articleId']
+
+            let article = await Article.findOne({_id: articleId})
+            if (!article) {
+                res.status(404).send({message: 'Article not found'})
+            }
+
+            return res.status(200).send(article)
+        } catch (err) {
+            console.log('Error:' + err)
+            return res.status(400).send({message: 'Error occurred'})
         }
     })
 
