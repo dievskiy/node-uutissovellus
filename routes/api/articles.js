@@ -37,8 +37,9 @@ router.post('/:article/comments',
 
             let comment = {
                 body: req.body.comment.body,
-                author: user
+                author: user.username
             }
+            console.log(comment)
 
             await article.update({$push: {comments: comment}})
 
@@ -51,7 +52,7 @@ router.post('/:article/comments',
 
 // create a new article
 router.post('/',
-    body('article.title').exists().isLength({min: 3, max: 128}),
+    body('article.title').exists().isLength({min: 3, max: 256}),
     body('article.body').isLength({min: 3, max: 8192}),
     // allow only uploaded images
     body('article.imageUrl').matches(/^https:\/\/shif-bucket.s3.eu-central-1.amazonaws.com\/\w+$/),
@@ -87,6 +88,9 @@ router.get('/:articleId', auth.optional,
             if (!article) {
                 res.status(404).send({message: 'Article not found'})
             }
+
+            article.comments = article.comments
+                .sort((firstItem, secondItem) => firstItem.createdAt - secondItem.createdAt).reverse()
 
             return res.status(200).send(article)
         } catch (err) {

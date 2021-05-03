@@ -7,10 +7,10 @@ const ArticleSchema = new mongoose.Schema({
     imageUrl: String,
     body: String,
     comments: [{
-        author: {type: mongoose.Schema.Types.ObjectId},
+        author: {type: String},
         body: {type: String},
         createdAt: {type: Date, default: Date.now},
-        _id : {id:false}
+        _id: {id: false}
     }],
     tagList: [{type: String}],
     author: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
