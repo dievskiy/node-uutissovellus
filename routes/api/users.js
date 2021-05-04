@@ -17,7 +17,7 @@ router.get('/users/:user',
             return res.status(404).send({message: "user not found"})
         }
 
-        return res.json({user: user.toJSON()})
+        return res.status(200).json({user: user.toJSON()})
     })
 
 router.post('/users/login',
@@ -53,6 +53,8 @@ router.post('/users',
 
         const user = new User(req.body.user)
         user.setPassword(req.body.user.password)
+        // standard avatar
+        user.avatar = "https://shif-bucket.s3.eu-central-1.amazonaws.com/avatar.png"
 
         let userExists = await User.find({$or: [{username: user.username}, {email: user.email}]})
         if (userExists.length > 0) {

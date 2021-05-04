@@ -13,7 +13,10 @@ const ArticleSchema = new mongoose.Schema({
         _id: {id: false}
     }],
     tagList: [{type: String}],
-    author: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
+    author: {
+        username: {type: String},
+        _id: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
+    }
 }, {timestamps: true});
 
 ArticleSchema.plugin(uniqueValidator);

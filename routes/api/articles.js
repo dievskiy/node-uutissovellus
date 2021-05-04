@@ -9,16 +9,27 @@ const upload = require('../../services/upload-image')
 const singleUpload = upload.single('image')
 
 // get all articles
-router.get('/feed', auth.optional, async function (req, res) {
-    try {
-        // sort in the descending order
-        let articles = await Article.find().sort({'createdAt': -1})
-        return res.status(200).send(articles)
-    } catch (e) {
-        console.log("Error " + e)
-        res.status(400).send({message: "error"})
-    }
-})
+router.get('/feed',
+    auth.optional,
+    async function (req, res) {
+        try {
+            // if user is specified, search articles only for this user
+
+            let username = req.query['user']
+            let articles
+
+            if (username) {
+                articles = await Article.find({'author.username': username}).sort({'createdAt': -1})
+            } else {
+                // sort in the descending order
+                articles = await Article.find().sort({'createdAt': -1})
+            }
+            return res.status(200).send(articles)
+        } catch (e) {
+            console.log("Error " + e)
+            res.status(400).send({message: "error"})
+        }
+    })
 
 // create a new comment
 router.post('/:article/comments',
@@ -69,7 +80,7 @@ router.post('/',
             if (!user) return res.sendStatus(401)
 
             let article = new Article(req.body.article)
-            article.author = user
+            article.author = {_id: user, username: user.username}
             await article.save()
             return res.status(200).send(article.jsonWith(user))
         } catch (err) {
