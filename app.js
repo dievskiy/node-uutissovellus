@@ -4,12 +4,55 @@ const express = require('express'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
     cors = require('cors'),
-    mongoose = require('mongoose')
+    mongoose = require('mongoose'),
+    swaggerJsdoc = require("swagger-jsdoc"),
+    swaggerUi = require("swagger-ui-express")
 require('dotenv').config()
 
 const isProd = process.env.NODE_ENV === 'production'
 
 const app = express()
+
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Nodejs Express API with Swagger",
+            version: "0.1.0",
+            description:
+                "This is a simple CRUD API application.",
+            license: {
+                name: "MIT",
+                url: "https://spdx.org/licenses/MIT.html",
+            },
+        },
+        servers: [
+            {
+                url: "http://localhost:3000/api",
+            },
+        ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                }
+            }
+        },
+        security: [{
+            bearerAuth: []
+        }]
+    },
+    apis: ["./routes/api/*.js"],
+}
+
+const specs = swaggerJsdoc(options)
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(specs)
+)
 
 app.use(cors())
 app.options('*', cors())

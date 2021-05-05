@@ -10,6 +10,7 @@
   "dependencies": {
     "@vue/cli": "^4.5.12",
     "@vue/cli-service-global": "^4.5.12",
+    "@wesleytodd/openapi": "^0.1.0",
     "aws-sdk": "^2.892.0",
     "body-parser": "1.19.0",
     "cors": "2.8.5",
@@ -29,6 +30,8 @@
     "passport": "0.3.2",
     "passport-local": "1.0.0",
     "request": "2.69.0",
+    "swagger-jsdoc": "6.0.0-rc.5",
+    "swagger-ui-express": "^4.1.6",
     "underscore": "1.8.3",
     "vue": "^2.6.12"
   },
