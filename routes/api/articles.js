@@ -246,6 +246,7 @@ router.post('/',
             let user = await User.findById(req.payload.id)
             if (!user) return res.sendStatus(401)
 
+            console.log(req.body.article)
             let article = new Article(req.body.article)
             article.author = {_id: user, username: user.username}
             await article.save()
